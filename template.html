@@ -9,7 +9,7 @@
         /* --- Paged.js 页面定义 --- */
         @page {
             size: A4;
-            margin: 12mm 15mm;
+            margin: 3mm 5mm; /* 终极极限压缩 II: 无界版 */
             /* 默认无页码 */
         }
 
@@ -47,112 +47,148 @@
         /* --- 内容页样式：字典式左右分栏 --- */
         .content-page {
             column-count: 2;
-            column-gap: 8mm; /* 减小分栏间距 */
+            column-gap: 3mm; /* 终极极限压缩 II: 无界版 */
             width: 100%;
             page: content; /* 应用带页码的内容页样式 */
         }
 
-        /* --- 单词条目样式 (卡片式) --- */
-        .word-entry {
-            margin-bottom: 8px; /* 稍微增加卡片间距 */
-            padding: 8px;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            background-color: #fff;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            /* 关键属性：让边框和背景在跨页/跨栏时“切开” */
+        /* --- 新卡片样式 (来自 demp.html) --- */
+        .dict-card {
+            --fg:#0b0b0b;
+            --muted:#475569;
+            font-family:Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color:var(--fg);
+            line-height:1.3;
+            border:2px dashed #0b0b0b;
+            padding:10px;
+            box-sizing:border-box;
+            margin-bottom: 10px; /* 卡片间距 */
             -webkit-box-decoration-break: slice;
             box-decoration-break: slice;
         }
 
-        /* --- 核心区：自适应布局 --- */
-        .core-info {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            margin-bottom: 4px;
-            gap: 0 8px;
-        }
-        .word-block {
-            flex-grow: 1;
-            flex-basis: 150px;
-        }
-        .word {
-            font-size: 1.6em;
-            font-weight: bold;
-        }
-        .phonetic {
-            font-size: 0.9em;
-            color: #555;
-        }
-        .definitions-section {
-            flex-grow: 999;
-            flex-basis: 200px;
-        }
-        .definitions-section ul {
-            list-style-type: none;
-            padding-left: 0;
-            margin: 0;
-        }
-        .definitions-section li {
-            margin-bottom: 2px;
-            padding-left: 8px;
-            border-left: 2px solid #e0e0e0;
-        }
-        .pos {
-            font-style: italic;
-            font-weight: bold;
-            color: #005a9c;
-            margin-right: 0.5em;
+        .dict-card .top-row {
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            margin-bottom:4px;
         }
 
-        /* --- 补充信息 --- */
-        .supplemental-info {
-            background-color: #f9f9f9;
-            border-top: 1px solid #eee;
-            padding: 6px 8px;
-            margin: 8px -8px -8px -8px; /* 利用负边距使其与卡片边缘对齐 */
-            border-radius: 0 0 3px 3px;
-            font-size: 0.9em; /* 为补充信息区设置统一的基础字号 */
+        /* Responsive layout for long words */
+        .dict-card.long-word .top-row {
+            flex-direction: column;
+            align-items: flex-start;
         }
-        h3 {
-            font-size: 0.95em;
-            font-weight: bold;
-            color: #005a9c; /* 使用主题色 */
-            letter-spacing: 0.5px;
-            border: none;
-            padding-bottom: 0;
-            margin-top: 4px;
-            margin-bottom: 4px;
+        .dict-card.long-word .meaning-col {
+            margin-left: 0;
+            margin-top: 6px;
         }
 
-        /* --- 用法示例：流式布局 --- */
-        .examples-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0 8px;
-            /* 移除独立字号，继承 .supplemental-info 的设置 */
+        .dict-card .word-col {
+            display:flex;
+            flex-direction:column;
         }
-        .example-item {
-            margin-bottom: 2px;
+
+        .dict-card .word {
+            font-weight:900;
+            font-size:18px;
+            text-decoration:underline wavy #0b0b0b;
+            margin-bottom:2px;
         }
-        .sentence-item {
-            width: 100%;
-            margin-bottom: 4px;
+
+        .dict-card .ipa {
+            font-family: "Lucida Sans Unicode", "Arial Unicode MS", sans-serif; /* Use fonts with better IPA support */
+            color:var(--muted);
+            font-size:13px;
+            margin-bottom:2px;
         }
-        .translation {
-            color: #666;
-            padding-left: 1em;
+
+        .dict-card .ipa span {
+            display: block; /* Stack phonetics vertically */
         }
-        .synonyms-section {
-            /* 移除独立字号，继承 .supplemental-info 的设置 */
+
+        .dict-card .difficulty {
+            background:#f3f4f6;
+            font-size:12px;
+            font-weight:bold;
+            margin-top:2px;
+            padding:2px 4px;
+            border-radius:999px;
+            display:inline-block;
         }
-        .special-tips {
-            background-color: #f5f5f5;
-            border-left: 3px solid #bbb;
-            padding: 6px 10px;
-            margin-top: 10px;
-            font-size: 0.9em;
+
+        .dict-card .difficulty .filled-star {
+            color:#D97706;
+        }
+
+        .dict-card .difficulty .empty-star {
+            color:#d1d5db;
+        }
+
+        .dict-card .meaning-col {
+            flex:1;
+            margin-left:10px;
+            font-size:13px;
+            list-style: none; /* Fix for potential unwanted list markers */
+        }
+
+        .dict-card .pos {
+            background:#f3f4f6;
+            color:var(--muted);
+            padding:2px 6px;
+            border-radius:999px;
+            font-size:12px;
+            display:inline-block;
+            margin-bottom:4px;
+            min-width:30px;
+            text-align:center;
+        }
+
+        .dict-card .meaning {
+            margin-bottom:2px;
+        }
+
+        .dict-card .section {
+            margin-top:6px;
+            padding-top:4px;
+            border-top:2px dashed #0b0b0b;
+        }
+
+        .dict-card .section-title {
+            font-weight:800;
+            font-size:12px;
+            margin-bottom:2px;
+        }
+
+        .dict-card .examples {
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+            font-size:12px;
+            color:#374151;
+        }
+
+        .dict-card .example-item {
+            flex:0 1 auto;
+            display:inline-block;
+            padding:2px 4px;
+            position:relative;
+        }
+
+        .dict-card .example-item .zh {
+            display:block;
+            margin-top:2px;
+            color:var(--muted);
+            font-size:12px;
+        }
+
+        .dict-card .note {
+            margin-top:4px;
+            font-size:12px;
+            color:var(--muted);
+            padding-top:4px;
+            border-top:2px dashed #0b0b0b;
+            font-weight:bold;
         }
     </style>
 </head>
@@ -173,51 +209,78 @@
     <!-- 单词条目模板 (隐藏，供Python读取) -->
     <div id="word-template" style="display: none;">
         <!-- word-entry-template-start -->
-        <div class="word-container">
-            <!-- 核心信息：自适应布局 -->
-            <div class="core-info">
-                <div class="word-block">
+        <div class="dict-card {long_word_class_placeholder}">
+            <div class="top-row">
+                <div class="word-col">
                     <div class="word">{word}</div>
-                    <div class="phonetic">
+                    <div class="ipa">
                         <span>{phonetic_uk}</span>
                         <span>{phonetic_us}</span>
                     </div>
+                    {difficulty_stars}
                 </div>
-                <div class="definitions-section">
+                <div class="meaning-col">
                     {definitions_list}
                 </div>
             </div>
-    
-            <!-- 补充信息 -->
-            <div class="supplemental-info">
-                <div class="synonyms-section">
-                    <h3>近义词</h3>
+            <div class="section synonyms-section">
+                <div class="section-title">近义词</div>
+                <div class="examples">
                     {synonyms_list}
                 </div>
-                <div class="examples-section">
-                    <h3>用法示例</h3>
+            </div>
+            <div class="section examples-section">
+                <div class="section-title">用法示例</div>
+                <div class="examples">
                     {examples_list}
                 </div>
-                {special_tips_section}
             </div>
+            {special_tips_section}
         </div>
         <!-- word-entry-template-end -->
     </div>
 
-    <!-- Paged.js 动态生成目录页码的脚本 -->
+    <!-- Paged.js 动态脚本 -->
     <script>
+        // --- 动态分隔线处理器 ---
+        function updateSeparators() {
+            document.querySelectorAll('.dict-card .examples').forEach(container => {
+                container.querySelectorAll('.example-item-separator').forEach(sep => sep.remove());
+                const items = container.querySelectorAll('.example-item');
+                if (items.length < 2) return;
+                let lastItemTop = items[0].offsetTop;
+                for (let i = 1; i < items.length; i++) {
+                    const currentItem = items[i];
+                    // Use a small threshold to account for sub-pixel rendering differences
+                    if (Math.abs(currentItem.offsetTop - lastItemTop) < 2) {
+                        const separator = document.createElement('div');
+                        separator.className = 'example-item-separator';
+                        separator.style.position = 'absolute';
+                        separator.style.left = '-5px';
+                        separator.style.top = '0';
+                        separator.style.bottom = '0';
+                        separator.style.borderLeft = '2px dashed #0b0b0b';
+                        // Use insertBefore for more correct DOM placement
+                        currentItem.insertBefore(separator, currentItem.firstChild);
+                    }
+                    lastItemTop = currentItem.offsetTop;
+                }
+            });
+        }
+
+        // --- Paged.js 核心处理器 ---
         class PageNumberHandler extends Paged.Handler {
             constructor(chunker, polisher, caller) {
                 super(chunker, polisher, caller);
             }
 
             afterRendered(pages) {
-                // 动态计算目录所占的页数
+                // 1. 动态计算目录页数
                 const contentStartElement = document.querySelector('.content-page');
                 const firstContentPage = contentStartElement ? contentStartElement.closest('.pagedjs_page') : null;
                 const tocPageCount = firstContentPage ? parseInt(firstContentPage.dataset.pageNumber, 10) - 1 : 0;
 
-                // 1. 更新目录中的页码
+                // 2. 更新目录中的页码
                 const tocEntries = document.querySelectorAll('.toc a');
                 tocEntries.forEach(entry => {
                     const targetId = entry.getAttribute('href').substring(1);
@@ -234,7 +297,7 @@
                     }
                 });
 
-                // 2. 更新页脚中的页码
+                // 3. 更新页脚中的页码
                 pages.forEach(page => {
                     const physicalPageNum = parseInt(page.element.dataset.pageNumber, 10);
                     if (physicalPageNum > tocPageCount) {
@@ -245,6 +308,12 @@
                         }
                     }
                 });
+
+                // 4. 调用分隔线更新函数
+                updateSeparators();
+                // 5. 使用 ResizeObserver 监视内容变化，以应对动态布局
+                const observer = new ResizeObserver(updateSeparators);
+                document.querySelectorAll('.content-page').forEach(el => observer.observe(el));
             }
         }
         Paged.registerHandlers(PageNumberHandler);
