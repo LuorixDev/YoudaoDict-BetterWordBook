@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>定制单词书</title>
+    <!-- 引入 Paged.js 核心库 -->
+    <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
+    <style>
+        /* --- Paged.js 页面定义 --- */
+        @page {
+            size: A4;
+            margin: 12mm 15mm;
+            /* 默认无页码 */
+        }
+
+        /* 专门为内容页定义一个带页码的页面样式 */
+        @page content {
+             @bottom-center {
+                content: ' '; /* CSS占位，强制paged.js创建页脚元素 */
+                font-size: 10pt;
+                color: #555;
+            }
+        }
+
+        /* --- 基础样式 --- */
+        body {
+            font-family: "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            font-size: 9.5pt;
+            line-height: 1.3;
+        }
+
+        /* --- 目录页样式 --- */
+        .toc-page {
+            break-after: page; /* 强制目录在此页后结束 */
+            counter-reset: page 0; /* 关键：在此页结束时，将页码计数器重置为0 */
+        }
+        .toc {
+            column-count: 3;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #337ab7;
+            font-size: 9pt;
+            line-height: 1.6;
+        }
+
+        /* --- 内容页样式：字典式左右分栏 --- */
+        .content-page {
+            column-count: 2;
+            column-gap: 8mm; /* 减小分栏间距 */
+            width: 100%;
+            page: content; /* 应用带页码的内容页样式 */
+        }
+
+        /* --- 单词条目样式 (卡片式) --- */
+        .word-entry {
+            margin-bottom: 8px; /* 稍微增加卡片间距 */
+            padding: 8px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            /* 关键属性：让边框和背景在跨页/跨栏时“切开” */
+            -webkit-box-decoration-break: slice;
+            box-decoration-break: slice;
+        }
+
+        /* --- 核心区：自适应布局 --- */
+        .core-info {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            margin-bottom: 4px;
+            gap: 0 8px;
+        }
+        .word-block {
+            flex-grow: 1;
+            flex-basis: 150px;
+        }
+        .word {
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+        .phonetic {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .definitions-section {
+            flex-grow: 999;
+            flex-basis: 200px;
+        }
+        .definitions-section ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        .definitions-section li {
+            margin-bottom: 2px;
+            padding-left: 8px;
+            border-left: 2px solid #e0e0e0;
+        }
+        .pos {
+            font-style: italic;
+            font-weight: bold;
+            color: #005a9c;
+            margin-right: 0.5em;
+        }
+
+        /* --- 补充信息 --- */
+        .supplemental-info {
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+            padding: 6px 8px;
+            margin: 8px -8px -8px -8px; /* 利用负边距使其与卡片边缘对齐 */
+            border-radius: 0 0 3px 3px;
+            font-size: 0.9em; /* 为补充信息区设置统一的基础字号 */
+        }
+        h3 {
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #005a9c; /* 使用主题色 */
+            letter-spacing: 0.5px;
+            border: none;
+            padding-bottom: 0;
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+
+        /* --- 用法示例：流式布局 --- */
+        .examples-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0 8px;
+            /* 移除独立字号，继承 .supplemental-info 的设置 */
+        }
+        .example-item {
+            margin-bottom: 2px;
+        }
+        .sentence-item {
+            width: 100%;
+            margin-bottom: 4px;
+        }
+        .translation {
+            color: #666;
+            padding-left: 1em;
+        }
+        .synonyms-section {
+            /* 移除独立字号，继承 .supplemental-info 的设置 */
+        }
+        .special-tips {
+            background-color: #f5f5f5;
+            border-left: 3px solid #bbb;
+            padding: 6px 10px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <!-- 目录页 -->
+    <div class="toc-page">
+        <h1>目录</h1>
+        <div class="toc">
+            {toc_content}
+        </div>
+    </div>
+
+    <!-- 内容页 -->
+    <div class="content-page">
+        {words_content}
+    </div>
+
+    <!-- 单词条目模板 (隐藏，供Python读取) -->
+    <div id="word-template" style="display: none;">
+        <!-- word-entry-template-start -->
+        <div class="word-container">
+            <!-- 核心信息：自适应布局 -->
+            <div class="core-info">
+                <div class="word-block">
+                    <div class="word">{word}</div>
+                    <div class="phonetic">
+                        <span>{phonetic_uk}</span>
+                        <span>{phonetic_us}</span>
+                    </div>
+                </div>
+                <div class="definitions-section">
+                    {definitions_list}
+                </div>
+            </div>
+    
+            <!-- 补充信息 -->
+            <div class="supplemental-info">
+                <div class="synonyms-section">
+                    <h3>近义词</h3>
+                    {synonyms_list}
+                </div>
+                <div class="examples-section">
+                    <h3>用法示例</h3>
+                    {examples_list}
+                </div>
+                {special_tips_section}
+            </div>
+        </div>
+        <!-- word-entry-template-end -->
+    </div>
+
+    <!-- Paged.js 动态生成目录页码的脚本 -->
+    <script>
+        class PageNumberHandler extends Paged.Handler {
+            constructor(chunker, polisher, caller) {
+                super(chunker, polisher, caller);
+            }
+
+            afterRendered(pages) {
+                // 动态计算目录所占的页数
+                const contentStartElement = document.querySelector('.content-page');
+                const firstContentPage = contentStartElement ? contentStartElement.closest('.pagedjs_page') : null;
+                const tocPageCount = firstContentPage ? parseInt(firstContentPage.dataset.pageNumber, 10) - 1 : 0;
+
+                // 1. 更新目录中的页码
+                const tocEntries = document.querySelectorAll('.toc a');
+                tocEntries.forEach(entry => {
+                    const targetId = entry.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        let parentPage = targetElement.closest('.pagedjs_page');
+                        if (parentPage) {
+                            const physicalPageNum = parseInt(parentPage.dataset.pageNumber, 10);
+                            const logicalContentPageNum = physicalPageNum - tocPageCount;
+                            if (logicalContentPageNum > 0) {
+                                entry.innerHTML += ` - ${logicalContentPageNum}`;
+                            }
+                        }
+                    }
+                });
+
+                // 2. 更新页脚中的页码
+                pages.forEach(page => {
+                    const physicalPageNum = parseInt(page.element.dataset.pageNumber, 10);
+                    if (physicalPageNum > tocPageCount) {
+                        const logicalContentPageNum = physicalPageNum - tocPageCount;
+                        const footer = page.element.querySelector('.pagedjs_margin-bottom-center .pagedjs_margin-content');
+                        if (footer) {
+                            footer.innerText = `第 ${logicalContentPageNum} 页`;
+                        }
+                    }
+                });
+            }
+        }
+        Paged.registerHandlers(PageNumberHandler);
+    </script>
+</body>
+</html>

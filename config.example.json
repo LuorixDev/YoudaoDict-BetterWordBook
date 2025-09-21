@@ -1,0 +1,11 @@
+{
+  "api_key": "YOUR_API_KEY_HERE",
+  "api_endpoint": "https://api.siliconflow.cn/v1/chat/completions",
+  "ai_model": "Qwen/Qwen3-Next-80B-A3B-Instruct",
+  "input_file": "example.json",
+  "output_file": "word_book.html",
+  "template_file": "template.html",
+  "cache_file": "cache.json",
+  "cache_save_interval": 5,
+  "ai_response_max_length": 3500
+}

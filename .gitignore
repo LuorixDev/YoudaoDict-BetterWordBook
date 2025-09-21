@@ -1,0 +1,14 @@
+# Configuration files
+config.json
+
+# Cache files
+cache.json
+
+# Generated output
+word_book.html
+
+# Python virtual environment
+venv/
+.venv/
+__pycache__/
+*.pyc
