@@ -6,6 +6,8 @@ import re
 from tqdm import tqdm
 from queue import Queue
 import threading
+import hashlib
+from datetime import datetime
 
 # --- 全局配置 ---
 CONFIG = {}
@@ -120,7 +122,18 @@ def get_word_details_from_ai(word):
                 tqdm.write(buffer)
             tqdm.write("--- [调试] 流式输出结束 ---")
 
-            return json.loads(json_string)
+            details = json.loads(json_string)
+            
+            # 清洗音标数据
+            if 'phonetic' in details and isinstance(details['phonetic'], dict):
+                if 'uk' in details['phonetic'] and isinstance(details['phonetic']['uk'], str):
+                    details['phonetic']['uk'] = details['phonetic']['uk'].strip(
+                        '/').replace('·', '').replace('-', '').replace('.', '')
+                if 'us' in details['phonetic'] and isinstance(details['phonetic']['us'], str):
+                    details['phonetic']['us'] = details['phonetic']['us'].strip(
+                        '/').replace('·', '').replace('-', '').replace('.', '')
+            
+            return details
 
         except (requests.exceptions.RequestException, ValueError) as e:
             tqdm.write(f"\n获取单词 '{word}' 详情时出错 (尝试 {attempt + 1}/{retries}): {e}")
@@ -137,13 +150,37 @@ def get_word_details_from_ai(word):
 def generate_html_from_template(words_details):
     """使用模板和单词数据生成最终的HTML文件。"""
     print("正在生成HTML文件...")
-    template_file = CONFIG.get("template_file", "template.html")
+    cover_template_file = CONFIG.get("cover_template_file")
+    word_book_template_file = CONFIG.get("word_book_template_file")
     output_file = CONFIG.get("output_file", "word_book.html")
+
+    cover_html = ""
+    if cover_template_file:
+        try:
+            with open(cover_template_file, 'r', encoding='utf-8') as f:
+                cover_template_content = f.read()
+            
+            # --- 动态计算封面元数据 ---
+            word_count = len(words_details)
+            generation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            # 创建一个稳定的单词列表字符串用于哈希
+            sorted_word_list_str = ",".join(sorted(words_details.keys()))
+            word_list_hash = hashlib.sha256(sorted_word_list_str.encode('utf-8')).hexdigest()[:16] # 取前16位
+
+            # --- 注入元数据 ---
+            cover_html = cover_template_content.replace("{word_count}", str(word_count))
+            cover_html = cover_html.replace("{generation_time}", generation_time)
+            cover_html = cover_html.replace("{word_list_hash}", word_list_hash)
+
+        except FileNotFoundError:
+            print(f"警告: 封面模板文件 '{cover_template_file}' 未找到，将不生成封面。")
+
     try:
-        with open(template_file, 'r', encoding='utf-8') as f:
+        with open(word_book_template_file, 'r', encoding='utf-8') as f:
             template_content = f.read()
     except FileNotFoundError:
-        print(f"错误: 模板文件 '{template_file}' 未找到。")
+        print(f"错误: 单词书模板文件 '{word_book_template_file}' 未找到。")
         return
 
     word_entry_template_str = template_content[template_content.find('<!-- word-entry-template-start -->'):template_content.find('<!-- word-entry-template-end -->')]
@@ -245,10 +282,21 @@ def generate_html_from_template(words_details):
             special_tips_section_html = f'<div class="note">特别提示: {special_tips_formatted}</div>'
 
         phonetic = details.get('phonetic', {})
+        phonetic_uk_str, phonetic_us_str = "", ""
+        uk_phonetic = phonetic.get('uk')
+        us_phonetic = phonetic.get('us')
+        if uk_phonetic and us_phonetic and uk_phonetic == us_phonetic:
+            phonetic_uk_str = f"英美 /{uk_phonetic}/"
+        else:
+            if uk_phonetic:
+                phonetic_uk_str = f"英 /{uk_phonetic}/"
+            if us_phonetic:
+                phonetic_us_str = f"美 /{us_phonetic}/"
+
         word_html = word_entry_template_str.replace("{long_word_class_placeholder}", long_word_class)
         word_html = word_html.replace("{word}", word)
-        word_html = word_html.replace("{phonetic_uk}", f"英 {phonetic.get('uk', '')}" if phonetic.get('uk') else "")
-        word_html = word_html.replace("{phonetic_us}", f"美 {phonetic.get('us', '')}" if phonetic.get('us') else "")
+        word_html = word_html.replace("{phonetic_uk}", phonetic_uk_str)
+        word_html = word_html.replace("{phonetic_us}", phonetic_us_str)
         word_html = word_html.replace("{difficulty_stars}", difficulty_html)
         word_html = word_html.replace("{definitions_list}", definitions_html)
         word_html = word_html.replace("{examples_list}", examples_html)
@@ -261,11 +309,12 @@ def generate_html_from_template(words_details):
     for word in sorted_words:
         toc_content_html += f"<a href='#{word}'>{word}</a><br>"
 
-    final_html = template_content.replace("{toc_content}", toc_content_html)
-    final_html = final_html.replace("{words_content}", all_words_html)
+    word_book_html = template_content.replace("{cover_content}", cover_html)
+    word_book_html = word_book_html.replace("{toc_content}", toc_content_html)
+    word_book_html = word_book_html.replace("{words_content}", all_words_html)
 
     with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(final_html)
+        f.write(word_book_html)
 
 def main():
     """主函数，集成了增量缓存和AI防死循环机制。"""
@@ -305,7 +354,6 @@ def main():
 
                 pbar.set_postfix_str(f"[{eta_str} | 缓存命中]")
                 pbar.update(1)
-                time.sleep(0.05)
             else:
                 result_queue = Queue()
                 
@@ -332,7 +380,6 @@ def main():
                         eta_str = f"剩余: ~{etr_formatted}"
                     
                     pbar.set_postfix_str(f"[{eta_str} | 查询: {word}]")
-                    time.sleep(0.1)
                 
                 details = result_queue.get()
                 
