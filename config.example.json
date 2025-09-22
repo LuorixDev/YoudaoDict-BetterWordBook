@@ -6,7 +6,11 @@
   "output_file": "word_book.html",
   "cover_template_file": "templates/cover_template.html",
   "word_book_template_file": "templates/word_book_template.html",
-  "cache_file": "cache.json",
+  "word_details_cache_file": "cache/word_details.json",
+  "embeddings_cache_file": "cache/embeddings.json",
   "cache_save_interval": 5,
-  "ai_response_max_length": 3500
+  "ai_response_max_length": 3500,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_api_endpoint": "https://api.openai.com/v1/embeddings",
+  "embedding_batch_size": 50
 }

@@ -86,7 +86,7 @@
             --muted:#475569;
             font-family:Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color:var(--fg);
-            line-height:1.3;
+            line-height:100%;
             border:2px dashed #0b0b0b;
             padding:10px;
             box-sizing:border-box;
@@ -99,7 +99,7 @@
             display:flex;
             justify-content:space-between;
             align-items:flex-start;
-            margin-bottom:4px;
+            margin-bottom:2px;
         }
 
         /* Responsive layout for long words */
@@ -115,6 +115,7 @@
         .dict-card .word-col {
             display:flex;
             flex-direction:column;
+            align-items: flex-start; /* 防止难度星级背景过宽 */
         }
 
         .dict-card .word {
@@ -122,6 +123,7 @@
             font-size:18px;
             text-decoration:underline wavy #0b0b0b;
             margin-bottom:2px;
+            line-height: 1.3; /* 恢复单词行的默认行高，防止下划线错位 */
         }
 
         .dict-card .ipa {
@@ -129,6 +131,7 @@
             color:var(--muted);
             font-size:13px;
             margin-bottom:2px;
+            margin-top: 3px; /* 增加顶部间距，防止被单词下划线遮挡 */
         }
 
         .dict-card .ipa span {
@@ -153,6 +156,16 @@
             color:#d1d5db;
         }
 
+        .dict-card .meaning-col-header {
+            text-align: left; /* 修正：用户要求星级在右栏时靠左对齐 */
+            min-height: 1.2em; /* 确保即使为空也占据一定高度，防止布局跳动 */
+        }
+
+        /* 当右侧栏头部为空时（即星星在左侧），彻底隐藏该元素，移除多余的空行 */
+        .dict-card .meaning-col-header:empty {
+            display: none;
+        }
+
         .dict-card .meaning-col {
             flex:1;
             margin-left:10px;
@@ -167,7 +180,7 @@
             border-radius:999px;
             font-size:12px;
             display:inline-block;
-            margin-bottom:4px;
+            margin-bottom:2px;
             min-width:30px;
             text-align:center;
         }
@@ -177,8 +190,8 @@
         }
 
         .dict-card .section {
-            margin-top:6px;
-            padding-top:4px;
+            margin-top:3px;
+            padding-top:2px;
             border-top:2px dashed #0b0b0b;
         }
 
@@ -191,7 +204,7 @@
         .dict-card .examples {
             display:flex;
             flex-wrap:wrap;
-            gap:8px;
+            gap:2px;
             font-size:12px;
             color:#374151;
         }
@@ -211,10 +224,10 @@
         }
 
         .dict-card .note {
-            margin-top:4px;
+            margin-top:2px;
             font-size:12px;
             color:var(--muted);
-            padding-top:4px;
+            padding-top:2px;
             border-top:2px dashed #0b0b0b;
             font-weight:bold;
         }
@@ -248,9 +261,10 @@
                         <span>{phonetic_uk}</span>
                         <span>{phonetic_us}</span>
                     </div>
-                    {difficulty_stars}
+                    {difficulty_stars_left}
                 </div>
                 <div class="meaning-col">
+                    <div class="meaning-col-header">{difficulty_stars_right}</div>
                     {definitions_list}
                 </div>
             </div>

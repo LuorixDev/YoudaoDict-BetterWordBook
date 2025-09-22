@@ -1,59 +1,47 @@
-# YoudaoDict-BetterWordBook: AI-Powered Custom Word Book Generator
+# YoudaoDict-BetterWordBook - AI驱动的定制化单词书生成器
 
-## 简介
+这是一个功能强大的Python脚本，旨在将您在有道词典中收藏的单词列表，通过AI技术，自动扩充和排版成一本专业、美观、可直接打印的A4单词书。
 
-这是一个功能强大且高度可定制的 Python 工具，旨在将您从有道词典导出的简单单词列表，通过调用先进的AI模型（如 Qwen、GPT 等），自动扩充和排版，最终生成一本专业级的、可直接用于A4打印的精美单词书。
+它不仅仅是一个简单的格式转换工具，更是一个集成了**AI内容增强、高级缓存、以及科学级3D数据可视化**于一体的完整解决方案。
 
-从单词的深度解析，到动词变形、名词可数性等语法细节，再到支持动态元数据的封面、自动页码的目录和媲美专业词典的排版，本项目致力于为您提供一个从数据到成品的、一站式的个人单词书定制解决方案。
+![Word Book Cover Example](https://raw.githubusercontent.com/LuorixDev/YoudaoDict-BetterWordBook/main/example.png)
 
-![项目效果图](https://raw.githubusercontent.com/LuorixDev/YoudaoDict-BetterWordBook/main/word_book_preview.png)
+## ✨ 核心功能亮点 (Features)
 
-## 核心功能亮点 (Features)
+*   **🤖 AI驱动的内容扩充**:
+    *   自动调用兼容OpenAI接口的大语言模型（LLM），为每个单词生成详细、高质量的学习资料。
+    *   内容包括：**英美音标、多重释义（核心词义加粗）、可数性/动词变位、近义词、常见短语、固定搭配、以及针对性例句**。
+    *   AI会根据单词特性，智能添加**特殊提示**，并评估**单词难度（1-5星）**。
 
-- **🤖 AI 驱动的内容扩充**:
-  - **全面信息**: 自动获取每个单词的英美音标、多重释义、难度评级、近义词、常用短语和固定搭配。
-  - **智能例句**: 为每个核心释义生成贴切的例句，并提供中文翻译。
-  - **深度语法分析**: 智能判断词性，自动列出**动词的所有时态变形**（第三人称单数、过去式、过去分词、现在分词），并明确标注**名词的可数性**（可数/不可数）。
-  - **特别提示**: AI 会根据单词特性，提供额外的、简短精炼的特别提示。
+*   **🔬 科学级3D词向量可视化**:
+    *   在单词书的封面上，自动生成一张**艺术化、信息量丰富的3D词向量“星图”**。
+    *   **自适应语义聚类**: 利用`K-Means`和**“肘部法则”**，智能地将单词按语义关联进行聚类，无需任何手动配置。
+    *   **专业数据处理**: 采用`t-SNE`降维和`MinMaxScaler`**数据归一化**，确保数据点在3D空间中分布均匀、清晰可读。
+    *   **精细化视觉调优**: 自动**裁剪图像边距**、**优化渲染层级**（确保标签不被遮挡）、并完美**支持中文字体**显示。
 
-- **📖 专业级的排版与打印**:
-  - **Paged.js 驱动**: 采用先进的 `paged.js` 库，确保在浏览器中预览的效果与最终打印到A4纸上的效果**完全一致**。
-  - **动态封面**: 自动生成包含**单词总数、生成时间、单词列表唯一哈希值**的动态封面，每一本单词书都独一无二。
-  - **智能目录**: 自动生成多栏、超链接的目录，并能**精确计算并显示每个单词所在的页码**。
-  - **优化的页面布局**: 采用媲美专业词典的双栏布局，并将页边距和分栏间距压缩到物理打印的极限，实现信息密度最大化。
+*   **⚡️ 增量式智能缓存**:
+    *   为**AI释义查询**和**词向量计算**配备了双重缓存系统。
+    *   再次运行时，只会为新单词请求AI或计算词向量，极大地节省了时间和API成本。
+    *   支持配置**缓存保存间隔**，有效防止因意外中断造成的数据丢失。
 
-- **🚀 高效与稳定的工程化设计**:
-  - **智能增量缓存**: 自动缓存所有AI返回的结果到 `cache.json`，再次运行时可直接从缓存读取，极大节省时间和API调用成本。
-  - **健壮的数据清洗**: 自动清洗AI返回的音标数据，移除所有不规范字符（如 `/`, `·`, `-`），确保数据格式的绝对纯净与统一。
-  - **多线程处理**: 使用多线程异步调用AI API，并通过 `tqdm` 进度条提供**实时、平滑的ETA（预计剩余时间）**，优化用户体验。
-  - **流式输出与调试**: 支持AI流式输出，方便在控制台实时观察AI的思考过程，便于调试 Prompt。
+*   **🎨 高度可定制的HTML模板**:
+    *   单词书的**封面**和**内页**样式，完全由独立的HTML模板文件 (`cover_template.html`, `word_book_template.html`) 控制。
+    *   您可以自由修改模板的HTML和CSS，打造完全符合您个人审美的单词书样式。
 
-- **🎨 极高的可定制性**:
-  - **模板化设计**: 项目结构完全模块化，封面、单词书主体、单词卡片的样式和布局，均由 `templates/` 文件夹下的HTML模板文件控制，用户可随心所欲地进行修改。
-  - **配置简单**: 所有核心参数（如API密钥、模型名称、文件路径等）均在 `config.json` 中统一管理，清晰明了。
+*   **🖨️ 专业打印排版**:
+    *   生成的HTML文件为标准的A4纵向布局，优化了分页逻辑，可直接通过浏览器“打印”功能，生成高质量的PDF或纸质版。
+    *   自动生成包含**封面、目录、以及单词详情**的完整单词书结构。
 
-## 项目结构
+*   **🛠️ 健壮的工程化设计**:
+    *   **配置驱动**: 所有关键参数（API密钥、模型名称、文件路径等）均通过`config.json`进行管理。
+    *   **AI稳定性保障**: 内置**API请求重试**、**流式响应处理**、以及**防AI死循环**的超长响应截断机制。
+    *   **数据清洗工具**: 附带独立的`clean_json_data.py`脚本，用于预处理您的原始数据。
 
-```
-.
-├── templates/
-│   ├── cover_template.html       # 封面模板
-│   └── word_book_template.html   # 单词书主模板 (目录 + 内容)
-├── .gitignore
-├── clean_cache.py                # 用于清理旧缓存数据的一次性脚本
-├── config.example.json           # 配置文件示例
-├── config.json                   # 您的本地配置文件 (需自行创建)
-├── example.json                  # 有道词典导出的单词列表示例
-├── LICENSE
-├── main.py                       # 主程序入口
-├── README.md                     # 本文档
-├── requirements.txt              # Python 依赖
-└── word_book.html                # 最终生成的单词书文件
-```
+## 🚀 如何使用 (Usage)
 
-## 安装与配置
+### 1. 环境配置 (Setup)
 
-1.  **克隆项目**:
+1.  **克隆仓库**:
     ```bash
     git clone https://github.com/LuorixDev/YoudaoDict-BetterWordBook.git
     cd YoudaoDict-BetterWordBook
@@ -63,38 +51,58 @@
     ```bash
     pip install -r requirements.txt
     ```
+    *注意: 如果您在中国大陆，可以考虑使用清华镜像源加速安装: `pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple`*
 
-3.  **创建并编辑配置文件**:
-    - 将 `config.example.json` 复制一份，并重命名为 `config.json`。
-    - 打开 `config.json`，填入您自己的配置，尤其是 `api_key`, `api_endpoint`, 和 `ai_model`。
+3.  **创建配置文件**:
+    *   将`config.example.json`复制一份，并重命名为`config.json`。
+    *   打开`config.json`，填入您自己的配置，**特别是您的API密钥 (`api_key`) 和模型终端节点 (`api_endpoint`, `embedding_api_endpoint`)**。
 
-## 使用方法
+4.  **准备数据文件**:
+    *   将您从有道词典导出的单词本JSON文件，替换掉项目中的`example.json`。
+    *   确保文件名与您在`config.json`中`input_file`字段的设置保持一致。
 
-1.  **准备单词列表**: 将您从有道词典导出的单词本 `json` 文件（格式需与 `example.json` 类似）放入项目根目录。
+### 2. (可选) 清洗数据
 
-2.  **更新配置**: 在 `config.json` 中，将 `input_file` 的值修改为您单词列表的文件名。
+如果您的单词本中包含中文或其他非英文条目，可以运行数据清洗脚本来移除它们。脚本会自动备份原始文件。
 
-3.  **运行主程序**:
-    ```bash
-    python main.py
-    ```
-    程序将开始处理单词，您会看到一个带预估剩余时间的进度条。已缓存的单词会直接跳过，新单词会通过AI进行处理。
+```bash
+python clean_json_data.py
+```
 
-4.  **预览与打印**:
-    - 程序运行完毕后，会生成一个 `word_book.html` 文件。
-    - 在现代浏览器（推荐 Chrome 或 Edge）中打开这个 `word_book.html` 文件。
-    - 按下 `Ctrl + P` 打开打印预览。
-    - 在打印设置中，确保目标打印机为“**另存为PDF**”，纸张大小为 **A4**，边距设置为“**无**”或“**默认**”（`paged.js` 已处理好边距）。
-    - 点击保存，即可得到一本排版完美的、专业级的PDF单词书。
+### 3. 生成单词书
 
-## 定制化指南
+一切准备就绪后，运行主程序：
 
-本项目最大的乐趣之一就是高度的可定制性。您可以：
+```bash
+python main.py
+```
 
-- **修改封面**: 直接编辑 `templates/cover_template.html`，修改标题、作者信息，甚至添加您自己的Logo图片。
-- **修改单词卡片样式**: `templates/word_book_template.html` 中包含了单词卡片的所有HTML结构和CSS样式。您可以修改字体、颜色、边框、布局等一切视觉元素。
-- **调整页面布局**: 在 `templates/word_book_template.html` 的 `<style>` 标签中，您可以调整 `@page` 规则，来改变页边距、分栏数等核心布局参数。
+脚本会自动开始处理您的单词列表。完成后，您将在项目根目录下找到在`config.json`中指定的HTML输出文件（默认为`word_book.html`）。
 
-## License
+## ⚙️ 配置项说明 (`config.json`)
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+| 键 (Key)                  | 说明                                                                                             |
+| ------------------------- | ------------------------------------------------------------------------------------------------ |
+| `api_key`                 | **[必需]** 您的AI服务API密钥。                                                                   |
+| `api_endpoint`            | **[必需]** 用于获取单词释义的LLM聊天API终端。                                                      |
+| `ai_model`                | 用于获取单词释义的LLM模型名称。                                                                  |
+| `input_file`              | 输入的原始单词数据JSON文件路径。                                                                 |
+| `output_file`             | 输出的HTML单词书文件路径。                                                                       |
+| `cover_template_file`     | 封面HTML模板的路径。                                                                             |
+| `word_book_template_file` | 单词内页HTML模板的路径。                                                                         |
+| `word_details_cache_file` | AI释义的缓存文件路径。                                                                           |
+| `embeddings_cache_file`   | 词向量的缓存文件路径。                                                                           |
+| `cache_save_interval`     | 处理多少个新单词后，自动保存一次缓存。                                                           |
+| `ai_response_max_length`  | AI响应的最大长度限制，用于防止死循环。                                                           |
+| `embedding_model`         | 用于生成词向量的Embedding模型名称。                                                              |
+| `embedding_api_endpoint`  | **[必需]** 用于获取词向量的Embedding API终端。                                                     |
+| `embedding_batch_size`    | 批量获取词向量时，每批包含的单词数量。                                                           |
+
+## 🛠️ 技术栈 (Tech Stack)
+
+*   **AI & 数据处理**: `requests`, `numpy`, `scikit-learn`, `kneed`
+*   **3D 可视化**: `matplotlib`
+*   **进度显示**: `tqdm`
+
+---
+*由 Luorix 开发的第三方工具，祝您学习愉快！*

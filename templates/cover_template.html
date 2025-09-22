@@ -3,7 +3,10 @@
     <div class="cover-title" style="font-size: 36pt; margin-bottom: 15mm;">
         有道词典收藏难词本 ({word_count} 词)
     </div>
-    <div class="cover-subtitle" style="font-size: 14pt; margin-bottom: 60mm; line-height: 1.8;">
+    <div class="embedding-plot-container" style="margin-bottom: 20mm; margin-top: 20mm;">
+        <img src="data:image/png;base64,{embedding_plot_base64}" alt="Word Embedding Visualization" style="max-width: 200mm; max-height: 150mm; border: 1px solid #ccc;">
+    </div>
+    <div class="cover-subtitle" style="font-size: 14pt; margin-bottom: 20mm; line-height: 1.8;">
         生成时间: {generation_time}<br>
         单词列表校验: {word_list_hash}
     </div>

@@ -474,6 +474,13 @@
                         "lanTo": "zh-CHS",
                         "word": "inferior",
                         "trans": "adj.差的；自卑的；下级的，下等的\nn.下级；次品"
+                    },
+                    {
+                        "createTime": 1757031224746,
+                        "lanFrom": "zh-CHS",
+                        "lanTo": "en",
+                        "word": "终身受益",
+                        "trans": "lifelong benefit; "
                     }
                 ]
             },
@@ -774,6 +781,13 @@
                         "trans": "v.赫然耸现，可怕地出现；显得突出，逼近；（不祥之事）似将发生；在织布机上织\nn.织布机；若隐若现的景象\nn.(Loom) （瑞典）洛姆（人名）"
                     },
                     {
+                        "createTime": 1756617342237,
+                        "lanFrom": "zh-CHS",
+                        "lanTo": "en",
+                        "word": "滕王阁序",
+                        "trans": "Preface to Tengwang Pavillion（中国古代名篇）; "
+                    },
+                    {
                         "createTime": 1756602707292,
                         "lanFrom": "en",
                         "lanTo": "zh-CHS",
@@ -1025,7 +1039,15 @@
             },
             {
                 "date": "2025年07月03日",
-                "list": []
+                "list": [
+                    {
+                        "createTime": 1751540959079,
+                        "lanFrom": "zh-CHS",
+                        "lanTo": "en",
+                        "word": "宁波市鄞州高级巾学",
+                        "trans": "Ningbo Yinzhou Senior Scarf School"
+                    }
+                ]
             },
             {
                 "date": "2025年07月02日",
@@ -1846,6 +1868,13 @@
                 "date": "2025年06月17日",
                 "list": [
                     {
+                        "createTime": 1750159325076,
+                        "lanFrom": "zh-CHS",
+                        "lanTo": "en",
+                        "word": "酸性/碱性",
+                        "trans": "Acidic/Alkaline"
+                    },
+                    {
                         "createTime": 1750156971569,
                         "lanFrom": "en",
                         "lanTo": "zh-CHS",
@@ -2020,7 +2049,15 @@
             },
             {
                 "date": "2025年06月13日",
-                "list": []
+                "list": [
+                    {
+                        "createTime": 1749768630430,
+                        "lanFrom": "zh-CHS",
+                        "lanTo": "en",
+                        "word": "赤壁赋",
+                        "trans": "The Red Cliff Ode; "
+                    }
+                ]
             },
             {
                 "date": "2025年06月12日",
@@ -2144,6 +2181,20 @@
                         "lanTo": "zh-CHS",
                         "word": "adore",
                         "trans": "vt.崇拜；爱慕；喜爱；极喜欢\nvi.崇拜；爱慕\nn.(Adore)人名；(法)阿多尔"
+                    },
+                    {
+                        "createTime": 1748907322680,
+                        "lanFrom": "zh-CHS",
+                        "lanTo": "en",
+                        "word": "登岳阳楼",
+                        "trans": "Ascending Yueyang Tower; "
+                    },
+                    {
+                        "createTime": 1748907315982,
+                        "lanFrom": "zh-CHS",
+                        "lanTo": "en",
+                        "word": "金陵怀古",
+                        "trans": "Nostalgia for the Past in Jinling"
                     }
                 ]
             },
@@ -7262,6 +7313,13 @@
                         "lanTo": "zh-CHS",
                         "word": "rid",
                         "trans": "v.使摆脱，使去掉\nn.(Rid) （俄、德、英、美）里德（人名）"
+                    },
+                    {
+                        "createTime": 1730200419625,
+                        "lanFrom": "zh-CHS",
+                        "lanTo": "en",
+                        "word": "leave使得",
+                        "trans": ""
                     },
                     {
                         "createTime": 1730195472566,

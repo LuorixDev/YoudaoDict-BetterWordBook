@@ -3,6 +3,7 @@ config.json
 
 # Cache files
 cache.json
+cache/
 
 # Generated output
 word_book.html
