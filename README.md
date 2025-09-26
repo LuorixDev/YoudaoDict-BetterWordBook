@@ -59,6 +59,14 @@
 
 4.  **准备数据文件**:
     *   将您从有道词典导出的单词本JSON文件，替换掉项目中的`example.json`。
+    *   example.json的获取方式：
+    *   1.安装好`wireshark`和`安卓模拟器`
+    *   2.在`安卓模拟器`内部安装`“有道智慧学习”`并`登陆`
+    *   3.开启`wireshark`开始抓包，可以在左上角筛选处只筛选`HTTP`请求（`有道客户端`获取`收藏夹`是一个`GET`请求）
+    *   4.点击主页的`单词本`按钮（即查看词典笔收藏）
+    *   5.回到`wireshark`找到如图的请求，右键`追踪流`，选择`TCP`或者`HTTP`均可，就可以获取到`JSON`啦，只需要把完整的`JSON`部分放到`example.json`中即可
+    *   <img width="1280" height="646" alt="image" src="https://github.com/user-attachments/assets/8491aef6-e342-4baa-8819-25dae6c080da" />
+
     *   确保文件名与您在`config.json`中`input_file`字段的设置保持一致。
 
 ### 2. (可选) 清洗数据
